@@ -1,18 +1,19 @@
 package edu.pucmm;
 
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author me@fredpena.dev
  * @created 02/06/2025 - 20:46
  */
-public class ParallelMatrixSearch {
+public class    ParallelMatrixSearch {
 
     private static final int MATRIX_SIZE = 1000;
     private static final int THREAD_COUNT = 4;
     private static final int[][] matrix = new int[MATRIX_SIZE][MATRIX_SIZE];
     private static final int TARGET = 1;
-    private static volatile Boolean found = false;
+    private static final AtomicBoolean found = new AtomicBoolean(false);
 
     public static void main(String[] args) {
         // Inicializar la matriz con valores aleatorios
@@ -60,19 +61,19 @@ public class ParallelMatrixSearch {
             else
                 end = start + rowByThread;
 
-            System.out.println("Iniciando hilo " + i + " para filas: " + start + " a " + end);
             thread[i] = new SearchThread(matrix, start, end, found);
             thread[i].start();
         }
     }
 
+    // Clase hilo que busca el target en el rango de filas proporcionado
     static class SearchThread extends Thread {
         private final int[][] matrix;
         private final int startRow;
         private final int endRow;
-        public volatile boolean found;
+        private volatile  AtomicBoolean found;
 
-        public SearchThread(int[][] matrix, int startRow, int endRow, boolean found) {
+        public SearchThread(int[][] matrix, int startRow, int endRow, AtomicBoolean found) {
             this.matrix = matrix;
             this.startRow = startRow;
             this.endRow = endRow;
@@ -82,18 +83,23 @@ public class ParallelMatrixSearch {
 
         @Override
         public void run() {
-            for (int i = startRow; i < endRow && !found; i++) {
-                for (int j = 0; j < MATRIX_SIZE && !found; j++) {
+            for (int i = startRow; i < endRow; i++) {
+                for (int j = 0; j < MATRIX_SIZE; j++) {
                     if (matrix[i][j] == TARGET) {
                         System.out.println("Número encontrado en la posición: (" + i + ", " + j + ")");
-                        System.out.println("Hilo " + this.getName() + " encontró el número.");
+                        found.set(true);
                         return;
+                    }
+                    
+                    if (found.get()) {
+                        return; 
                     }
                 }
             }
         }
     }
 
+    // Llena la matris con valores al azar
     private static void fillMatrixRandom() {
         Random rand = new Random();
         for (int i = 0; i < MATRIX_SIZE; i++) {
