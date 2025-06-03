@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author me@fredpena.dev
  * @created 02/06/2025 - 20:46
  */
-public class    ParallelMatrixSearch {
+public class ParallelMatrixSearch {
 
     private static final int MATRIX_SIZE = 1000;
     private static final int THREAD_COUNT = 4;
@@ -29,12 +29,12 @@ public class    ParallelMatrixSearch {
         // Medir el tiempo de ejecución de la búsqueda paralela
         System.out.println("Buscando en paralelo");
         startTime = System.nanoTime();
-        parallelSearch();
+        boolean encontradoParalelo = parallelSearch();
         endTime = System.nanoTime();
         System.out.println("Tiempo búsqueda paralela: " + ((endTime - startTime) / 1_000_000) + "ms");
     }
 
-    // Recorre cada fila y columan de la matriz hasta encontrar el objetivo
+    // Recorre cada fila y columna de la matriz hasta encontrar el objetivo
     private static void sequentialSearch() {
         for (int i = 0; i < MATRIX_SIZE; i++) {
             for (int j = 0; j < MATRIX_SIZE; j++) {
@@ -46,24 +46,31 @@ public class    ParallelMatrixSearch {
         }
     }
 
-    // Divide la matriz entre varios hilos los cuales buscan el numero objetivo por
-    // sus filas asignadas, si un hilo encuentra el numero target entonces los demas
+    // Divide la matriz entre varios hilos los cuales buscan el número objetivo por
+    // sus filas asignadas, si un hilo encuentra el número target entonces los demás
     // se detienen
-    private static void parallelSearch() {
-        Thread[] thread = new Thread[THREAD_COUNT];
-        int rowByThread = MATRIX_SIZE / THREAD_COUNT;
+    private static boolean parallelSearch() {
+        Thread[] threads = new Thread[THREAD_COUNT];
+        int rowsPerThread = MATRIX_SIZE / THREAD_COUNT;
+
         for (int i = 0; i < THREAD_COUNT; i++) {
-            int start = i * rowByThread;
-            int end;
-
-            if (i == THREAD_COUNT - 1)
-                end = MATRIX_SIZE;
-            else
-                end = start + rowByThread;
-
-            thread[i] = new SearchThread(matrix, start, end, found);
-            thread[i].start();
+            int startRow = i * rowsPerThread;
+            int endRow = (i == THREAD_COUNT - 1) ? MATRIX_SIZE : (startRow + rowsPerThread);
+            threads[i] = new SearchThread(matrix, startRow, endRow, found);
+            threads[i].start();
         }
+
+        // Esperar a que terminen todos los hilos
+        for (int i = 0; i < THREAD_COUNT; i++) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        // Devolver si alguno lo encontró
+        return found.get();
     }
 
     // Clase hilo que busca el target en el rango de filas proporcionado
@@ -71,7 +78,7 @@ public class    ParallelMatrixSearch {
         private final int[][] matrix;
         private final int startRow;
         private final int endRow;
-        private volatile  AtomicBoolean found;
+        private final AtomicBoolean found;
 
         public SearchThread(int[][] matrix, int startRow, int endRow, AtomicBoolean found) {
             this.matrix = matrix;
@@ -83,16 +90,15 @@ public class    ParallelMatrixSearch {
 
         @Override
         public void run() {
-            for (int i = startRow; i < endRow; i++) {
-                for (int j = 0; j < MATRIX_SIZE; j++) {
+            for (int i = startRow; i < endRow && !found.get(); i++) {
+                for (int j = 0; j < MATRIX_SIZE && !found.get(); j++) {
                     if (matrix[i][j] == TARGET) {
-                        System.out.println("Número encontrado en la posición: (" + i + ", " + j + ")");
-                        found.set(true);
+                        // Solo el primer hilo que cambie found de false a true imprime
+                        if (found.compareAndSet(false, true)) {
+                            System.out.println("Número encontrado en la posición: ("
+                                    + i + ", " + j + ") por " + getName());
+                        }
                         return;
-                    }
-                    
-                    if (found.get()) {
-                        return; 
                     }
                 }
             }

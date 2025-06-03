@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dee3d5aa-b825-4a09-a360-7a146124029b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/edu/pucmm/ParallelMatrixSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/edu/pucmm/ParallelMatrixSearch.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -86,7 +86,7 @@
       <workItem from="1717649316033" duration="2530000" />
       <workItem from="1748920891964" duration="3833000" />
       <workItem from="1748955646285" duration="2155000" />
-      <workItem from="1748958170572" duration="311000" />
+      <workItem from="1748958170572" duration="2589000" />
     </task>
     <servers />
   </component>
