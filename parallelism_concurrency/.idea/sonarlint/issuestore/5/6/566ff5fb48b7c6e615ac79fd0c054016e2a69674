@@ -1,0 +1,15 @@
+
+
+java:S1854"9Remove this useless assignment to local variable "queue".(öş²şÿÿÿÿ8ÂÓÚìş1J$730dc706-d05f-4e83-90f2-a12449020f8f
+r
+java:S1481"*Remove this unused "queue" local variable.(öş²şÿÿÿÿ8ÃÓÚìş1J$7ff975f3-59ca-449f-95fe-ccba69b49bea
+Ä
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(“–ış8ÅÓÚìş1J$f9281a53-4f86-4166-b0b7-557930a8d6d4
+Ä
+java:S1186 "€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(“–ış8ÆÓÚìş1J$a8aa4c65-e2fb-4449-bec9-444869d337dc
+z
+java:S1068"2Remove this unused "PRODUCER_COUNT" private field.(ìõå…úÿÿÿÿ8ÇÓÚìş1J$9f422084-002b-4f62-8cdc-4cf09bf25feb
+z
+java:S1068"2Remove this unused "CONSUMER_COUNT" private field.(­æòÿÿÿÿÿ8ÈÓÚìş1J$225ed431-ff52-45ee-b316-713d146d6efa
+y
+java:S1068"1Remove this unused "PRODUCE_COUNT" private field.(¶É„ôùÿÿÿÿ8ÊÓÚìş1J$82a59bb2-cc86-4933-98a6-b8c37c6295bb
